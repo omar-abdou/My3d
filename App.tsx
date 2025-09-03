@@ -7,6 +7,7 @@ import { Loader } from './components/Loader';
 import { StyleSelector, RenderingStyle } from './components/StyleSelector';
 import { generate3DRendering } from './services/geminiService';
 import { fileToBase64 } from './utils/imageUtils';
+import { DownloadIcon } from './components/icons/DownloadIcon';
 
 interface SourceImage {
   base64: string;
@@ -58,6 +59,19 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDownload = useCallback(() => {
+    if (!generatedImage) return;
+
+    const link = document.createElement('a');
+    link.href = generatedImage;
+    const originalName = sourceImage?.name.split('.').slice(0, -1).join('.') || 'design';
+    link.download = `${originalName}-${renderingStyle}-3d.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [generatedImage, sourceImage, renderingStyle]);
+
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 font-sans p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto max-w-7xl">
@@ -103,7 +117,17 @@ const App: React.FC = () => {
             {error && <p className="text-red-400 text-center bg-red-900/50 p-4 rounded-lg">{error}</p>}
             
             {!isLoading && !error && generatedImage && (
-              <ImageDisplay title="التصميم ثلاثي الأبعاد" imageUrl={generatedImage} />
+              <div className="w-full flex flex-col items-center">
+                <ImageDisplay title="التصميم ثلاثي الأبعاد" imageUrl={generatedImage} />
+                <button
+                  onClick={handleDownload}
+                  className="mt-6 w-full max-w-xs py-2 px-4 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
+                  aria-label="Download generated image"
+                >
+                  <DownloadIcon className="w-5 h-5 ml-2" />
+                  تحميل الصورة
+                </button>
+              </div>
             )}
 
             {!isLoading && !error && !generatedImage && (
