@@ -53,7 +53,8 @@ const App: React.FC = () => {
       setGeneratedImage(`data:image/png;base64,${resultBase64}`);
     } catch (err) {
       console.error(err);
-      setError('حدث خطأ أثناء إنشاء الصورة ثلاثية الأبعاد. قد تكون المشكلة في واجهة برمجة التطبيقات أو في الصورة المدخلة. يرجى المحاولة مرة أخرى.');
+      const errorMessage = err instanceof Error ? err.message : 'حدث خطأ أثناء إنشاء الصورة ثلاثية الأبعاد. قد تكون المشكلة في واجهة برمجة التطبيقات أو في الصورة المدخلة. يرجى المحاولة مرة أخرى.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

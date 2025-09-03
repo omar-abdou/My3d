@@ -61,6 +61,15 @@ export const generate3DRendering = async (base64ImageData: string, mimeType: str
 
   } catch (error) {
     console.error("Error calling Gemini API:", error);
+    
+    // Check if it's a quota exceeded error
+    if (error && typeof error === 'object' && 'error' in error) {
+      const apiError = error as any;
+      if (apiError.error?.code === 429 || apiError.error?.status === 'RESOURCE_EXHAUSTED') {
+        throw new Error("تم تجاوز حد الاستخدام المسموح لواجهة برمجة التطبيقات. يرجى التحقق من خطة الاشتراك أو المحاولة مرة أخرى لاحقاً.");
+      }
+    }
+    
     throw new Error("Failed to generate 3D rendering from Gemini API.");
   }
 };
