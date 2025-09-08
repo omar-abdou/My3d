@@ -3,26 +3,27 @@ import React, { useCallback, useState } from 'react';
 import { UploadIcon } from './icons/UploadIcon';
 
 interface FileUploadProps {
-  onImageUpload: (file: File) => void;
-  imageName: string | undefined;
+  onImageUpload: (files: File[]) => void;
 }
 
-export const FileUpload: React.FC<FileUploadProps> = ({ onImageUpload, imageName }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({ onImageUpload }) => {
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      onImageUpload(e.target.files[0]);
+  const handleFiles = (files: FileList | null) => {
+    if (files && files.length > 0) {
+      onImageUpload(Array.from(files));
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFiles(e.target.files);
   };
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      onImageUpload(e.dataTransfer.files[0]);
-    }
+    handleFiles(e.dataTransfer.files);
   }, [onImageUpload]);
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLLabelElement>) => {
@@ -59,13 +60,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onImageUpload, imageName
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
           <UploadIcon className="w-10 h-10 mb-3 text-gray-400" />
           <p className="mb-2 text-sm text-gray-400">
-            <span className="font-semibold text-cyan-400">انقر للتحميل</span> أو قم بسحب وإفلات الصورة
+            <span className="font-semibold text-cyan-400">انقر للتحميل</span> أو قم بسحب وإفلات الصور
           </p>
           <p className="text-xs text-gray-500">PNG, JPG, WEBP (بحد أقصى 5 ميجابايت)</p>
         </div>
-        <input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} accept="image/png, image/jpeg, image/webp" />
+        <input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} accept="image/png, image/jpeg, image/webp" multiple />
       </label>
-      {imageName && <p className="mt-2 text-sm text-center text-gray-300">الملف المحدد: {imageName}</p>}
     </div>
   );
 };

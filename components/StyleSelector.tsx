@@ -1,7 +1,6 @@
-
 import React from 'react';
 
-export type RenderingStyle = 'realistic' | 'sketch' | 'wireframe';
+export type RenderingStyle = 'realistic' | 'sketch' | 'wireframe' | 'minimalist' | 'cozy' | 'blueprint';
 
 interface StyleSelectorProps {
   selectedStyle: RenderingStyle;
@@ -12,6 +11,9 @@ const styles: { id: RenderingStyle; label: string }[] = [
   { id: 'realistic', label: 'واقعي' },
   { id: 'sketch', label: 'رسم تخطيطي' },
   { id: 'wireframe', label: 'إطار سلكي' },
+  { id: 'minimalist', label: 'بسيط حديث' },
+  { id: 'cozy', label: 'دافئ ومريح' },
+  { id: 'blueprint', label: 'مخطط أزرق' },
 ];
 
 export const StyleSelector: React.FC<StyleSelectorProps> = ({ selectedStyle, onStyleChange }) => {
