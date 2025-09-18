@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 import { UploadIcon } from './icons/UploadIcon';
 
@@ -62,9 +61,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onImageUpload }) => {
           <p className="mb-2 text-sm text-gray-400">
             <span className="font-semibold text-cyan-400">انقر للتحميل</span> أو قم بسحب وإفلات الصور
           </p>
-          <p className="text-xs text-gray-500">PNG, JPG, WEBP (بحد أقصى 5 ميجابايت)</p>
+          <p className="text-xs text-gray-500">PNG, JPG, WEBP, BMP, TIFF (بحد أقصى 5 ميجابايت)</p>
         </div>
-        <input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} accept="image/png, image/jpeg, image/webp" multiple />
+        <input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} accept="image/png, image/jpeg, image/webp, image/bmp, image/tiff" multiple />
       </label>
     </div>
   );

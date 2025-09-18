@@ -34,9 +34,9 @@ const App: React.FC = () => {
         files.map(async (file) => {
           const base64String = await fileToBase64(file);
           
-          const match = base64String.match(/^data:(image\/(?:png|jpeg|webp));base64,/);
+          const match = base64String.match(/^data:(image\/(?:png|jpe?g|webp|bmp|tiff));base64,/);
           if (!match || !match[1]) {
-            throw new Error(`نوع الملف '${file.name}' غير مدعوم. الرجاء تحميل ملفات PNG أو JPG أو WEBP فقط.`);
+            throw new Error(`نوع الملف '${file.name}' غير مدعوم. الرجاء تحميل ملفات PNG أو JPG أو WEBP أو BMP أو TIFF فقط.`);
           }
           const mimeType = match[1];
 
@@ -104,7 +104,7 @@ const App: React.FC = () => {
 
     try {
         const base64String = generatedImage;
-        const match = base64String.match(/^data:(image\/(?:png|jpeg|webp));base64,/);
+        const match = base64String.match(/^data:(image\/(?:png|jpe?g|webp|bmp|tiff));base64,/);
         if (!match || !match[1]) {
             throw new Error("Invalid image format for upscaling.");
         }
