@@ -81,10 +81,15 @@ const App: React.FC = () => {
       if (!navigator.onLine) {
         setError('فشل الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.');
       } else if (err instanceof Error) {
-        if (err.message.includes("Invalid API Key")) {
+        const message = err.message.toLowerCase();
+        if (message.includes("invalid api key")) {
           setError("مفتاح API غير صالح أو مفقود. يرجى التحقق من تكوين بيئة التشغيل.");
-        } else if (err.message.includes("No image data found")) {
+        } else if (message.includes("no image data found")) {
           setError('لم يتمكن الذكاء الاصطناعي من إنشاء صورة. جرب صورًا مختلفة أو تأكد من وضوح المخططات.');
+        } else if (message.includes("safety policies")) {
+          setError("تم حظر إنشاء الصورة بسبب سياسات الأمان. يرجى تجربة صورة أو تعليمات مختلفة.");
+        } else if (message.includes("quota") || message.includes("billing")) {
+          setError("حدثت مشكلة في الحساب أو الحصة لواجهة برمجة التطبيقات. يرجى التحقق من إعدادات حسابك.");
         } else {
           setError('فشل طلب واجهة برمجة التطبيقات. قد تكون هناك مشكلة مؤقتة في الخادم. يرجى المحاولة مرة أخرى لاحقًا.');
         }
@@ -119,8 +124,13 @@ const App: React.FC = () => {
         if (!navigator.onLine) {
             setError('فشل الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.');
         } else if (err instanceof Error) {
-            if (err.message.includes("Invalid API Key")) {
+            const message = err.message.toLowerCase();
+            if (message.includes("invalid api key")) {
               setError("مفتاح API غير صالح أو مفقود. يرجى التحقق من تكوين بيئة التشغيل.");
+            } else if (message.includes("safety policies")) {
+              setError("تم حظر تحسين جودة الصورة بسبب سياسات الأمان.");
+            } else if (message.includes("quota") || message.includes("billing")) {
+              setError("حدثت مشكلة في الحساب أو الحصة لواجهة برمجة التطبيقات. يرجى التحقق من إعدادات حسابك.");
             } else {
               setError('فشل تحسين جودة الصورة. قد تكون هناك مشكلة مؤقتة في الخادم. يرجى المحاولة مرة أخرى.');
             }

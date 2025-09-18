@@ -22,6 +22,14 @@ const getStylePrompt = (style: RenderingStyle): string => {
             return "Furnish all rooms to create a cozy, warm, and inviting atmosphere, like a rustic cottage. Use warm lighting, soft textiles (rugs, curtains, blankets), comfortable furniture, and natural materials like wood and stone. A fireplace in the living area would be a great addition. The final image must be a high-resolution, professional 3D architectural visualization.";
         case 'blueprint':
             return "Convert this into a classic architectural blueprint style. The output should be white lines on a dark blue background. Include basic annotations for room names (e.g., 'Living Room', 'Bedroom 1') in a clean, technical font. Do not include furniture or 3D textures.";
+        case 'classic':
+            return "Furnish all rooms in a classic, ornate style. Use intricate patterns, curved furniture lines, warm colors, and rich materials like dark wood, velvet, and brass. Incorporate decorative elements like detailed moldings and chandeliers. The final image must be a high-resolution, professional 3D architectural visualization.";
+        case 'modern':
+            return "Furnish all rooms with a modern and contemporary aesthetic. Emphasize clean, straight lines, neutral color palettes with occasional bold accents, and simplicity in design. Use materials like metal, glass, and plastic alongside natural ones. Spaces should feel open and uncluttered. The final image must be a high-resolution, professional 3D architectural visualization.";
+        case 'rustic':
+            return "Furnish all rooms with a rustic design. Focus on natural, raw, and aged materials like raw wood and stone. Use an earthy color palette. The furniture should be simple and robust, giving a sense of warmth, simplicity, and connection to nature. The final image must be a high-resolution, professional 3D architectural visualization.";
+        case 'industrial':
+            return "Furnish all rooms with an industrial style. Expose raw materials like brick, concrete, and unpolished metals (like steel and iron). Use a combination of neutral tones and utilitarian furniture. Features like exposed ducts and pipes would fit well. The overall look should be bold, edgy, and modern. The final image must be a high-resolution, professional 3D architectural visualization.";
         case 'realistic':
         default:
             return "Fully furnish all rooms with modern, high-quality, realistic furniture that matches the room's designated purpose (e.g., sofas and coffee table in the living room, bed and wardrobe in the bedroom, dining table in the dining area). The final image must be a high-resolution, professional 3D architectural visualization, with natural lighting and textures.";
@@ -89,6 +97,10 @@ The final output must be ONLY the image.`;
       },
     });
 
+    if (response.promptFeedback?.blockReason) {
+      throw new Error(`Request blocked due to safety policies: ${response.promptFeedback.blockReason}`);
+    }
+
     // Find the image part in the response
     if (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts) {
       for (const part of response.candidates[0].content.parts) {
@@ -102,8 +114,15 @@ The final output must be ONLY the image.`;
 
   } catch (error) {
     console.error("Error calling Gemini API:", error);
-    if (String(error).toLowerCase().includes('api key not valid')) {
+    const errorMessage = String(error).toLowerCase();
+    if (errorMessage.includes('api key not valid')) {
       throw new Error("Invalid API Key: Please ensure your API key is configured correctly.");
+    }
+    if (errorMessage.includes('quota') || errorMessage.includes('billing')) {
+      throw new Error("API Quota/Billing Error: Please check your Google AI account settings.");
+    }
+    if (errorMessage.includes('safety policies')) {
+       throw new Error("Image generation blocked due to safety policies.");
     }
     throw new Error("Failed to generate 3D rendering from Gemini API.");
   }
@@ -133,6 +152,10 @@ export const upscaleImage = async (base64ImageData: string, mimeType: string): P
       },
     });
 
+    if (response.promptFeedback?.blockReason) {
+      throw new Error(`Request blocked due to safety policies: ${response.promptFeedback.blockReason}`);
+    }
+
     if (response.candidates?.[0]?.content?.parts) {
       for (const part of response.candidates[0].content.parts) {
         if (part.inlineData) {
@@ -145,8 +168,15 @@ export const upscaleImage = async (base64ImageData: string, mimeType: string): P
 
   } catch (error) {
     console.error("Error calling Gemini API for upscaling:", error);
-    if (String(error).toLowerCase().includes('api key not valid')) {
+    const errorMessage = String(error).toLowerCase();
+    if (errorMessage.includes('api key not valid')) {
       throw new Error("Invalid API Key: Please ensure your API key is configured correctly.");
+    }
+    if (errorMessage.includes('quota') || errorMessage.includes('billing')) {
+      throw new Error("API Quota/Billing Error: Please check your Google AI account settings.");
+    }
+    if (errorMessage.includes('safety policies')) {
+       throw new Error("Image upscaling blocked due to safety policies.");
     }
     throw new Error("Failed to upscale image via Gemini API.");
   }

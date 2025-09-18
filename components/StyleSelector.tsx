@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type RenderingStyle = 'realistic' | 'sketch' | 'wireframe' | 'minimalist' | 'cozy' | 'blueprint';
+export type RenderingStyle = 'realistic' | 'sketch' | 'wireframe' | 'minimalist' | 'cozy' | 'blueprint' | 'classic' | 'modern' | 'rustic' | 'industrial';
 
 interface StyleSelectorProps {
   selectedStyle: RenderingStyle;
@@ -14,13 +14,17 @@ const styles: { id: RenderingStyle; label: string }[] = [
   { id: 'minimalist', label: 'بسيط حديث' },
   { id: 'cozy', label: 'دافئ ومريح' },
   { id: 'blueprint', label: 'مخطط أزرق' },
+  { id: 'classic', label: 'كلاسيكي' },
+  { id: 'modern', label: 'حديث' },
+  { id: 'rustic', label: 'ريفي' },
+  { id: 'industrial', label: 'صناعي' },
 ];
 
 export const StyleSelector: React.FC<StyleSelectorProps> = ({ selectedStyle, onStyleChange }) => {
   return (
     <div>
       <h3 className="text-lg font-semibold text-gray-300 mb-3 text-center">اختر نمط التصميم</h3>
-      <div className="grid grid-cols-3 gap-2 rounded-lg bg-gray-700 p-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 rounded-lg bg-gray-700 p-1">
         {styles.map((style) => (
           <button
             key={style.id}
